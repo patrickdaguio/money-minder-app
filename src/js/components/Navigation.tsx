@@ -9,14 +9,14 @@ import { HiBanknotes, HiHome } from "react-icons/hi2";
 
 const Navigation = () => {
   return (
-    <aside className="w-64 bg-gray-100 flex-shrink-0 border-r border-gray-300">
+    <aside className="w-64 bg-gray-50 flex-shrink-0 border-r border-gray-300">
       <div className="flex flex-col h-full">
-        <div className="p-4">
-          <h1 className="font-bold text-2xl">
+        <div className="px-4">
+          <h1 className="font-bold py-3 text-2xl border-b border-gray-300 text-slate-800">
             <Link to="">MoneyMinder</Link>
           </h1>
         </div>
-        <nav className="flex-1 p-2">
+        <nav className="flex-1 p-2 mt-2 text-neutral-800">
           <ul className="space-y-2">
             <li>
               <NavLink to="" className="nav-link" end>

@@ -8,7 +8,7 @@ function RootLayout() {
       <Navigation />
       <div className="flex-1 h-full overflow-x-hidden overflow-y-auto">
         <Header />
-        <main>
+        <main className="p-4">
           <Outlet />
         </main>
       </div>
