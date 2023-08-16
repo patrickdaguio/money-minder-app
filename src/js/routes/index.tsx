@@ -12,6 +12,11 @@ import PiggyBank from "@js/pages/PiggyBank";
 import WishList from "@js/pages/WishList";
 import Profile from "@js/pages/Profile";
 
+import Login from "@js/pages/Authentication/Login";
+import Register from "@js/pages/Authentication/Register";
+import AuthenticationRoot from "@js/pages/Authentication/AuthenticationRoot";
+import ForgotPassword from "@js/pages/Authentication/ForgotPassword";
+
 const router = createBrowserRouter([
   {
     path: "",
@@ -56,6 +61,23 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />,
+      },
+    ],
+  },
+  {
+    element: <AuthenticationRoot />,
+    children: [
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
       },
     ],
   },
