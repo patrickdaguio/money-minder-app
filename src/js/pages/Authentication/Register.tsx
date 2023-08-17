@@ -1,8 +1,44 @@
+import { FormEvent, useContext } from "react";
 import { Link } from "react-router-dom";
 
+import ErrorMessage from "@js/components/ErrorMessage";
+
+import AuthContext from "@js/context/AuthContext";
 import GoogleIcon from "@assets/google.png";
+import useForm from "@js/hooks/useForm";
+import {
+  requiredValidation,
+  emailValidation,
+  passwordValidation,
+} from "@js/utilities/formValidation";
 
 const Register = () => {
+  const nameInput = useForm([requiredValidation]);
+  const passwordInput = useForm([requiredValidation, passwordValidation]);
+  const emailInput = useForm([requiredValidation, emailValidation]);
+
+  const isFormValid =
+    nameInput.isValid && emailInput.isValid && passwordInput.isValid;
+
+  const authCtx = useContext(AuthContext);
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+
+    if (!isFormValid) {
+      nameInput.formInputBlurHandler();
+      passwordInput.formInputBlurHandler();
+      emailInput.formInputBlurHandler();
+      return;
+    }
+
+    try {
+      authCtx.signUp(emailInput.value, passwordInput.value);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <div className="mb-6 text-center">
@@ -12,35 +48,68 @@ const Register = () => {
           MoneyMinder
         </p>
       </div>
-      <form className="text-secondary">
-        <div className="form-group">
+      <form className="text-secondary" onSubmit={handleSubmit}>
+        <div className={nameInput.hasError ? "form-group error" : "form-group"}>
           <label htmlFor="name">Name</label>
+          {nameInput.hasError && nameInput.activeErrorIndex !== null && (
+            <ErrorMessage
+              text={nameInput.errorMessages[nameInput.activeErrorIndex]}
+            />
+          )}
           <input
             type="text"
             name="name"
             id="name"
-            required
+            onChange={(e) => nameInput.formInputChangeHandler(e.target.value)}
+            onBlur={nameInput.formInputBlurHandler}
+            value={nameInput.value}
             placeholder="Your name"
+            autoComplete="name"
           />
         </div>
-        <div className="form-group">
+        <div
+          className={emailInput.hasError ? "form-group error" : "form-group"}>
           <label htmlFor="email">Email</label>
+          {emailInput.hasError && emailInput.activeErrorIndex !== null && (
+            <ErrorMessage
+              text={emailInput.errorMessages[emailInput.activeErrorIndex]}
+            />
+          )}
           <input
             type="email"
             name="email"
             id="email"
-            required
+            onChange={(e) => emailInput.formInputChangeHandler(e.target.value)}
+            onBlur={emailInput.formInputBlurHandler}
+            value={emailInput.value}
             placeholder="name@company.com"
+            autoComplete="email"
           />
         </div>
-        <div className="form-group">
+        <div
+          className={
+            passwordInput.hasError ? "form-group error" : "form-group"
+          }>
           <label htmlFor="password">Password</label>
+          {passwordInput.hasError &&
+            passwordInput.activeErrorIndex !== null && (
+              <ErrorMessage
+                text={
+                  passwordInput.errorMessages[passwordInput.activeErrorIndex]
+                }
+              />
+            )}
           <input
             type="password"
             name="password"
             id="password"
-            required
+            onChange={(e) =>
+              passwordInput.formInputChangeHandler(e.target.value)
+            }
+            onBlur={passwordInput.formInputBlurHandler}
+            value={passwordInput.value}
             placeholder="Password"
+            autoComplete="new-password"
           />
         </div>
         <button
