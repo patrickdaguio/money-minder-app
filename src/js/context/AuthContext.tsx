@@ -5,6 +5,10 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
 } from "firebase/auth";
 
 import { auth } from "@js/utilities/firebase";
@@ -18,6 +22,9 @@ interface AuthContext {
   signUp: (email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
+  resetPassword: (email: string) => void;
+  signInWithGoogle: () => void;
+  addUserDisplayName: (name: string) => void;
 }
 
 const AuthContext = React.createContext<AuthContext>({
@@ -25,6 +32,9 @@ const AuthContext = React.createContext<AuthContext>({
   signUp: () => {},
   login: () => {},
   logout: () => {},
+  resetPassword: () => {},
+  signInWithGoogle: () => {},
+  addUserDisplayName: () => {},
 });
 
 export const AuthProvider: React.FC<Props> = (props) => {
@@ -51,11 +61,31 @@ export const AuthProvider: React.FC<Props> = (props) => {
     return signOut(auth);
   }
 
+  function resetPassword(email: string) {
+    return sendPasswordResetEmail(auth, email);
+  }
+
+  function signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+
+    return signInWithPopup(auth, provider);
+  }
+
+  function addUserDisplayName(name: string) {
+    if (auth.currentUser)
+      return updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+  }
+
   const value = {
     currentUser,
     signUp,
     login,
     logout,
+    resetPassword,
+    signInWithGoogle,
+    addUserDisplayName,
   };
 
   return (

@@ -9,7 +9,7 @@ export const emailValidation: ValidationConfig = {
 };
 
 export const passwordValidation: ValidationConfig = {
-  validateFn: (value) => value.trim().length > 6,
+  validateFn: (value) => value.trim().length >= 6,
   errorMessage: "Password must be at least 6 characters",
 };
 

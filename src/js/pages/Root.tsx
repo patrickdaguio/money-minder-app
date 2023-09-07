@@ -1,8 +1,17 @@
-import { Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import Navigation from "@js/components/Navigation";
 import Header from "@js/components/Header";
 
+import AuthContext from "@js/context/AuthContext";
+
 function RootLayout() {
+  const authCtx = useContext(AuthContext);
+
+  if (!authCtx.currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="flex bg-gray-200 h-screen">
       <Navigation />

@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // Icons
 import { AiOutlineBell } from "react-icons/ai";
@@ -6,15 +7,28 @@ import { BsCurrencyPound } from "react-icons/bs";
 import { MdOutlineDarkMode } from "react-icons/md";
 
 import { getFormattedDate } from "@js/utilities/date";
+import AuthContext from "@js/context/AuthContext";
 
 const Header = () => {
+  const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const currentDate: Date = new Date();
   const formattedDate: string = getFormattedDate(currentDate);
+
+  async function handleLogout() {
+    try {
+      await authCtx.logout();
+      navigate("/login");
+    } catch {
+      console.log("Failed to logout");
+    }
+  }
 
   return (
     <header className="relative bg-gray-50 shadow text-neutral-800">
       <div className="px-4 py-2 flex justify-between items-center border-b-gray-300">
-        <time>{formattedDate}</time>
+        <time onClick={handleLogout}>{formattedDate}</time>
         <nav className="flex items-center gap-2.5">
           <button
             type="button"

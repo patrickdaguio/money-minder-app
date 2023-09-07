@@ -1,7 +1,5 @@
-import { FormEvent, useContext } from "react";
-import { Link } from "react-router-dom";
-
-import ErrorMessage from "@js/components/ErrorMessage";
+import { FormEvent, useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import AuthContext from "@js/context/AuthContext";
 import GoogleIcon from "@assets/google.png";
@@ -12,17 +10,25 @@ import {
   passwordValidation,
 } from "@js/utilities/formValidation";
 
+import ErrorMessage from "@js/components/ErrorMessage";
+
 const Register = () => {
   const nameInput = useForm([requiredValidation]);
   const passwordInput = useForm([requiredValidation, passwordValidation]);
   const emailInput = useForm([requiredValidation, emailValidation]);
+  const [formError, setFormError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const isFormValid =
-    nameInput.isValid && emailInput.isValid && passwordInput.isValid;
+    nameInput.isValid &&
+    emailInput.isValid &&
+    passwordInput.isValid &&
+    !formError;
 
   const authCtx = useContext(AuthContext);
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
 
     if (!isFormValid) {
@@ -33,9 +39,13 @@ const Register = () => {
     }
 
     try {
-      authCtx.signUp(emailInput.value, passwordInput.value);
-    } catch (error) {
-      console.log(error);
+      setFormError("");
+      setIsLoading(true);
+      await authCtx.signUp(emailInput.value, passwordInput.value);
+      await authCtx.addUserDisplayName(nameInput.value);
+      navigate("/", { replace: true });
+    } catch {
+      setFormError("Failed to create an account. Try again later.");
     }
   }
 
@@ -48,6 +58,11 @@ const Register = () => {
           MoneyMinder
         </p>
       </div>
+      {formError && (
+        <p className="bg-red-200 text-red-600 font-medium py-1.5 px-2.5 mb-6 rounded-md">
+          {formError}
+        </p>
+      )}
       <form className="text-secondary" onSubmit={handleSubmit}>
         <div className={nameInput.hasError ? "form-group error" : "form-group"}>
           <label htmlFor="name">Name</label>
@@ -65,6 +80,7 @@ const Register = () => {
             value={nameInput.value}
             placeholder="Your name"
             autoComplete="name"
+            required
           />
         </div>
         <div
@@ -84,6 +100,7 @@ const Register = () => {
             value={emailInput.value}
             placeholder="name@company.com"
             autoComplete="email"
+            required
           />
         </div>
         <div
@@ -110,11 +127,13 @@ const Register = () => {
             value={passwordInput.value}
             placeholder="Password"
             autoComplete="new-password"
+            required
           />
         </div>
         <button
           className="bg-tertiary hover:bg-accent transition-colors text-white w-full rounded-md py-3 font-medium outline-none mt-4 focus:bg-accent"
-          type="submit">
+          type="submit"
+          disabled={isLoading}>
           Create Account
         </button>
       </form>

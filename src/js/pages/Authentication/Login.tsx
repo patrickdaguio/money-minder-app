@@ -1,14 +1,64 @@
-import { Link } from "react-router-dom";
+import { FormEvent, useContext, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import GoogleIcon from "@assets/google.png";
+import AuthContext from "@js/context/AuthContext";
+import { FirebaseError } from "firebase/app";
 
 const Login = () => {
+  const [formError, setFormError] = useState("");
+  const loginEmail = useRef<HTMLInputElement>(null);
+  const loginPassword = useRef<HTMLInputElement>(null);
+
+  const authCtx = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    if (!loginEmail.current || !loginPassword.current) return;
+
+    try {
+      setFormError("");
+      await authCtx.login(
+        loginEmail.current.value,
+        loginPassword.current.value
+      );
+      navigate("/", { replace: true });
+    } catch (error) {
+      const err = error instanceof FirebaseError;
+      if (err) {
+        if (error.code === "auth/user-not-found")
+          setFormError("Failed to log in: User not found.");
+        else if (error.code === "auth/wrong-password")
+          setFormError("Failed to log in: Password is incorrect.");
+      }
+    }
+  }
+
+  async function loginWithGoogle() {
+    try {
+      await authCtx.signInWithGoogle();
+    } catch (error) {
+      const err = error instanceof FirebaseError;
+      if (err) {
+        console.error(error);
+        setFormError(error.message);
+      }
+    }
+  }
+
   return (
     <>
       <h2 className="text-4xl font-bold text-center mb-8 text-primary">
         Login
       </h2>
-      <form className="text-secondary">
+      {formError && (
+        <p className="bg-red-200 text-red-600 font-medium py-1.5 px-2.5 mb-6 rounded-md">
+          {formError}
+        </p>
+      )}
+      <form className="text-secondary" onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email</label>
           <input
@@ -16,6 +66,8 @@ const Login = () => {
             name="email"
             id="email"
             required
+            ref={loginEmail}
+            autoComplete="email"
             placeholder="name@company.com"
           />
         </div>
@@ -25,7 +77,9 @@ const Login = () => {
             type="password"
             name="password"
             id="password"
+            autoComplete="current-password"
             required
+            ref={loginPassword}
             placeholder="Password"
           />
         </div>
@@ -60,6 +114,7 @@ const Login = () => {
       </div>
       <button
         type="button"
+        onClick={loginWithGoogle}
         className="border border-gray-300 w-full outline-none focus:border-gray-500 hover:border-gray-500 transition-colors rounded-md py-3 text-secondary font-medium inline-flex items-center justify-center gap-x-4">
         <span className="h-6 block">
           <img className="h-full" src={GoogleIcon} alt="Google icon" />
