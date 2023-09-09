@@ -9,6 +9,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   updateProfile,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
 } from "firebase/auth";
 
 import { auth } from "@js/utilities/firebase";
@@ -20,7 +23,7 @@ interface Props {
 interface AuthContext {
   currentUser: User | null;
   signUp: (email: string, password: string) => void;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string, rememberMe: boolean) => void;
   logout: () => void;
   resetPassword: (email: string) => void;
   signInWithGoogle: () => void;
@@ -39,11 +42,14 @@ const AuthContext = React.createContext<AuthContext>({
 
 export const AuthProvider: React.FC<Props> = (props) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) setCurrentUser(user);
       else setCurrentUser(null);
+
+      setIsLoading(false);
     });
 
     return unsubscribe;
@@ -53,7 +59,12 @@ export const AuthProvider: React.FC<Props> = (props) => {
     return createUserWithEmailAndPassword(auth, email, password);
   }
 
-  function login(email: string, password: string) {
+  async function login(email: string, password: string, rememberMe: boolean) {
+    await setPersistence(
+      auth,
+      rememberMe ? browserLocalPersistence : browserSessionPersistence
+    );
+
     return signInWithEmailAndPassword(auth, email, password);
   }
 
@@ -89,7 +100,9 @@ export const AuthProvider: React.FC<Props> = (props) => {
   };
 
   return (
-    <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
+    <AuthContext.Provider value={value}>
+      {!isLoading && props.children}
+    </AuthContext.Provider>
   );
 };
 

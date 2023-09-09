@@ -14,7 +14,6 @@ import Profile from "@js/pages/Profile";
 
 import Login from "@js/pages/Authentication/Login";
 import Register from "@js/pages/Authentication/Register";
-import AuthenticationRoot from "@js/pages/Authentication/AuthenticationRoot";
 import ForgotPassword from "@js/pages/Authentication/ForgotPassword";
 
 const router = createBrowserRouter([
@@ -65,21 +64,16 @@ const router = createBrowserRouter([
     ],
   },
   {
-    element: <AuthenticationRoot />,
-    children: [
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-      },
-    ],
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
   },
 ]);
 

@@ -4,9 +4,6 @@ import AuthContext from "@js/context/AuthContext";
 const Home = () => {
   const authCtx = useContext(AuthContext);
 
-  console.log(authCtx.currentUser?.displayName);
-  console.log(authCtx.currentUser);
-
   return (
     <div>
       <h1>Home</h1>

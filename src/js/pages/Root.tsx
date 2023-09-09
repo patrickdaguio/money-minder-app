@@ -8,11 +8,7 @@ import AuthContext from "@js/context/AuthContext";
 function RootLayout() {
   const authCtx = useContext(AuthContext);
 
-  if (!authCtx.currentUser) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return (
+  return authCtx.currentUser ? (
     <div className="flex bg-gray-200 h-screen">
       <Navigation />
       <div className="flex-1 h-full overflow-x-hidden overflow-y-auto">
@@ -22,6 +18,8 @@ function RootLayout() {
         </main>
       </div>
     </div>
+  ) : (
+    <Navigate to="/login" replace />
   );
 }
 
