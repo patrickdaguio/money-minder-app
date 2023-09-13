@@ -14,7 +14,8 @@ import {
   browserSessionPersistence,
 } from "firebase/auth";
 
-import { auth } from "@js/utilities/firebase";
+import db, { auth } from "@js/utilities/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 interface Props {
   children: React.ReactNode;
@@ -28,6 +29,7 @@ interface AuthContext {
   resetPassword: (email: string) => void;
   signInWithGoogle: () => void;
   addUserDisplayName: (name: string) => void;
+  createUserDocument: () => void;
 }
 
 const AuthContext = React.createContext<AuthContext>({
@@ -38,6 +40,7 @@ const AuthContext = React.createContext<AuthContext>({
   resetPassword: () => {},
   signInWithGoogle: () => {},
   addUserDisplayName: () => {},
+  createUserDocument: () => {},
 });
 
 export const AuthProvider: React.FC<Props> = (props) => {
@@ -89,6 +92,14 @@ export const AuthProvider: React.FC<Props> = (props) => {
       });
   }
 
+  function createUserDocument() {
+    if (auth.currentUser) {
+      return setDoc(doc(db, "users", auth.currentUser.uid), {
+        defaultCurrency: "gb",
+      });
+    }
+  }
+
   const value = {
     currentUser,
     signUp,
@@ -97,6 +108,7 @@ export const AuthProvider: React.FC<Props> = (props) => {
     resetPassword,
     signInWithGoogle,
     addUserDisplayName,
+    createUserDocument,
   };
 
   return (

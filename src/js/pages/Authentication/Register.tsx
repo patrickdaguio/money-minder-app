@@ -11,6 +11,7 @@ import {
 } from "@js/utilities/formValidation";
 
 import ErrorMessage from "@js/components/ErrorMessage";
+import { FirebaseError } from "firebase/app";
 
 const Register = () => {
   const nameInput = useForm([requiredValidation]);
@@ -43,9 +44,18 @@ const Register = () => {
       setIsLoading(true);
       await authCtx.signUp(emailInput.value, passwordInput.value);
       await authCtx.addUserDisplayName(nameInput.value);
+      await authCtx.createUserDocument();
       navigate("/", { replace: true });
-    } catch {
-      setFormError("Failed to create an account. Try again later.");
+    } catch (error) {
+      const err = error instanceof FirebaseError;
+      console.log(error);
+      if (err) {
+        if (error.code === "auth/email-already-in-use")
+          setFormError(
+            "The email address is already in use by another account."
+          );
+        else setFormError(error.message);
+      } else setFormError("Failed to create an account. Try again later.");
     }
   }
 

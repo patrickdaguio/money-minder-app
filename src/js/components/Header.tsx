@@ -26,32 +26,32 @@ const Header = () => {
   }
 
   return (
-    <header className="relative bg-gray-50 shadow text-neutral-800">
+    <header className="relative bg-gray-50 shadow text-primary">
       <div className="px-4 py-2 flex justify-between items-center border-b-gray-300">
         <time onClick={handleLogout}>{formattedDate}</time>
         <nav className="flex items-center gap-2.5">
           <button
             type="button"
-            className="bg-gray-200 rounded-lg p-1.5 hover:bg-neutral-800 hover:text-white transition-colors">
+            className="bg-gray-200 rounded-lg p-1.5 hover:bg-primary hover:text-white transition-colors">
             <MdOutlineDarkMode className="w-5 h-5" />
             <span className="sr-only">Dark Mode</span>
           </button>
           <button
             type="button"
-            className="bg-gray-200 rounded-lg p-1.5 hover:bg-neutral-800 hover:text-white transition-colors">
+            className="bg-gray-200 rounded-lg p-1.5 hover:bg-primary hover:text-white transition-colors">
             <AiOutlineBell className="w-5 h-5" />
             <span className="sr-only">Notifications</span>
           </button>
           <button
             type="button"
-            className="bg-gray-200 rounded-lg p-1.5 hover:bg-neutral-800 hover:text-white transition-colors">
+            className="bg-gray-200 rounded-lg p-1.5 hover:bg-primary hover:text-white transition-colors">
             <BsCurrencyPound className="w-5 h-5" />
             <span className="sr-only">Default Currency</span>
           </button>
           <div className="border-l border-gray-300 pl-2.5">
             <Link
               to="profile"
-              className="bg-neutral-800 rounded-full w-10 h-10 block"></Link>
+              className="bg-primary rounded-full w-10 h-10 block"></Link>
           </div>
         </nav>
       </div>

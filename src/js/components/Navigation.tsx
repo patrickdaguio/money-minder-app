@@ -16,7 +16,7 @@ const Navigation = () => {
             <Link to="">MoneyMinder</Link>
           </h1>
         </div>
-        <nav className="flex-1 p-2 mt-2 text-neutral-800">
+        <nav className="flex-1 p-2 mt-2 text-primary">
           <ul className="space-y-2">
             <li>
               <NavLink to="" className="nav-link" end>

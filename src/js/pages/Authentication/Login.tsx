@@ -15,8 +15,6 @@ const Login = () => {
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
 
-  console.log(authCtx.currentUser);
-
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
