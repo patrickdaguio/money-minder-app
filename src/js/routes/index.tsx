@@ -6,7 +6,7 @@ import Income from "@js/pages/Income";
 import Expense from "@js/pages/Expense";
 import Budgets from "@js/pages/Budgets";
 import Categories from "@js/pages/Categories";
-import Accounts from "@js/pages/Accounts";
+import Accounts from "@js/pages/Accounts/Accounts";
 import Subscriptions from "@js/pages/Subscriptions";
 import PiggyBank from "@js/pages/PiggyBank";
 import WishList from "@js/pages/WishList";
