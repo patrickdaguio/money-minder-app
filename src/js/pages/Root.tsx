@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
 import Navigation from "@js/components/Navigation";
 import Header from "@js/components/Header";
 
@@ -16,6 +17,7 @@ function RootLayout() {
         <main className="p-4">
           <Outlet />
         </main>
+        <Toaster />
       </div>
     </div>
   ) : (

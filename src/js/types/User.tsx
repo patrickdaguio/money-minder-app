@@ -7,6 +7,13 @@ interface User {
   defaultCurrency: string;
   accounts: { [accountId: string]: Account };
   budgets: { [budgetId: string]: Budget };
+  categories: Category[];
 }
+
+export type Category = {
+  id: string;
+  name: string;
+  expense: boolean;
+};
 
 export default User;

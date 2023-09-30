@@ -1,9 +1,11 @@
-.error {
-  @apply relative after:absolute after:-left-4 after:h-full after:w-1 after:bg-red-500 after:top-0 after:rounded-full;
+@layer components {
+  .error {
+    @apply relative after:absolute after:-left-4 after:h-full after:w-1 after:bg-red-500 after:top-0 after:rounded-full;
 
-  input[type="text"],
-  input[type="email"],
-  input[type="password"] {
-    @apply border-2 border-red-500 focus:ring-0;
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      @apply border-2 border-red-500 focus:ring-0;
+    }
   }
 }

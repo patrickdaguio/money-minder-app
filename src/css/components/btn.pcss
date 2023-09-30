@@ -1,7 +1,9 @@
-.btn {
-  @apply transition-colors text-white w-full rounded-md py-3 font-medium outline-none;
+@layer components {
+  .btn {
+    @apply transition-colors text-white w-full rounded-md py-3 font-medium outline-none;
 
-  &--primary {
-    @apply bg-primary focus:bg-secondary hover:bg-secondary;
+    &--primary {
+      @apply bg-primary focus:bg-secondary hover:bg-secondary;
+    }
   }
 }
