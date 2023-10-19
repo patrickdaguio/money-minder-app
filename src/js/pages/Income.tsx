@@ -224,10 +224,12 @@ const Income = () => {
       // Add a new document to the "names" subcollection with your name.
       const incomeDocRef = await addDoc(transactionsCollectionRef, incomeData);
 
+      form.reset();
+
       toast({
         description: "Income successfully added.",
       });
-      console.log("Account successfully added with ID: ", incomeDocRef.id);
+      console.log("Transaction successfully added with ID: ", incomeDocRef.id);
     } catch (error) {
       console.log(error);
     }
