@@ -16,8 +16,6 @@ import db from "@js/utilities/firebase";
 import Create from "@js/pages/Accounts/Create";
 
 const Accounts = () => {
-  console.log("render");
-
   const { currentUser } = useContext(AuthContext);
   const userID = currentUser!.uid;
 

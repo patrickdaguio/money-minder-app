@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
+import { AlertDestructive } from "@/js/components/AlertDestructive";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 import { cn } from "@/lib/utils";
 import AuthContext from "@js/context/AuthContext";
@@ -35,7 +36,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 
-const FormSchema = z.object({
+const formSchema = z.object({
   name: z.string({
     required_error: "A name is required.",
   }),
@@ -46,12 +47,14 @@ const FormSchema = z.object({
 
 const Categories = () => {
   const { currentUser } = useContext(AuthContext);
+  const { toast } = useToast()
 
   const [userCategories, setUserCategories] = useState<Category[]>([]);
   const [defaultCategories, setDefaultCategories] = useState<Category[]>([]);
+  const [error, setError] = useState(false)
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
     },
@@ -111,7 +114,7 @@ const Categories = () => {
     fetchCategories();
   }, [currentUser]);
 
-  async function onSubmit(values: z.infer<typeof FormSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!currentUser) return;
 
     const userID = currentUser!.uid;
@@ -122,32 +125,40 @@ const Categories = () => {
       .toLowerCase()
       .replace(/-+/g, "-");
 
-    try {
-      const userDocRef = doc(db, "users", userID);
+    const categoryExist = userCategories.some(category => category.id === categoryId) || defaultCategories.some(category => category.id === categoryId)
 
-      // Create a reference to the "categories" subcollection within the user's document
-      const categoriesCollectionRef = collection(userDocRef, "categories");
+    if (!categoryExist) {
+      try {
+        const userDocRef = doc(db, "users", userID);
+  
+        // Create a reference to the "categories" subcollection within the user's document
+        const categoriesCollectionRef = collection(userDocRef, "categories");
+  
+        // Define the data for the new category
+        const categoryData = {
+          id: categoryId,
+          name: values.name,
+          expense: values.type === "expense" ? true : false,
+        };
+  
+        // Use setDoc to add the new category document to the "categories" subcollection
+        await setDoc(doc(categoriesCollectionRef, categoryId), categoryData);
+  
+        userCategories.push(categoryData);
 
-      // Define the data for the new category
-      const categoryData = {
-        id: categoryId,
-        name: values.name,
-        expense: values.type === "expense" ? true : false,
-      };
-
-      // Use setDoc to add the new category document to the "categories" subcollection
-      await setDoc(doc(categoriesCollectionRef, categoryId), categoryData);
-
-      userCategories.push(categoryData);
-    } catch (error) {
-      console.error(error);
+        setError(false)
+        toast({
+          description: "Category successfully added.",
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      setError(true)
     }
 
-    form.reset();
 
-    toast({
-      description: "Category successfully added.",
-    });
+    form.reset();
   }
 
   const handleDeleteCategory = async (categoryId: string) => {
@@ -173,6 +184,7 @@ const Categories = () => {
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="card">
         <h2 className="font-bold text-2xl mb-4">Add Category</h2>
+        { error && <AlertDestructive description="Category already exist." title="Error" className="mb-5" />}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
@@ -203,7 +215,7 @@ const Categories = () => {
                           "w-[220px] justify-between",
                           !field.value && "text-muted-foreground"
                         )}>
-                        <SelectValue placeholder="Select the category type" />
+                        <SelectValue placeholder="Select category type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
