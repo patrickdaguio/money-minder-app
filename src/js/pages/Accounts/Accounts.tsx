@@ -14,6 +14,8 @@ import AuthContext from "@js/context/AuthContext";
 import db from "@js/utilities/firebase";
 
 import Create from "@js/pages/Accounts/Create";
+import DataTable from "@/js/pages/Accounts/DataTable";
+import columns from "@/js/pages/Accounts/DataColumns";
 
 const Accounts = () => {
   const { currentUser } = useContext(AuthContext);
@@ -84,17 +86,20 @@ const Accounts = () => {
         ) : accounts.length === 0 ? (
           <p>No accounts found.</p>
         ) : (
-          <ul>
-            {accounts.map((account) => (
-              <li className="flex justify-between" key={account.id}>
-                <span>{account.name}</span>
-                <span>{account.balance}</span>
-                <button onClick={() => handleDeleteAccount(account.id)}>
-                  Delete
-                </button>
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul>
+              {accounts.map((account) => (
+                <li className="flex justify-between" key={account.id}>
+                  <span>{account.name}</span>
+                  <span>{account.balance}</span>
+                  <button onClick={() => handleDeleteAccount(account.id)}>
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <DataTable columns={columns} data={accounts}/>
+          </>
         )}
       </div>
     </div>
