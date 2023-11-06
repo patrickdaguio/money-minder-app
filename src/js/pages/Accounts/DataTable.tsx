@@ -3,6 +3,7 @@ import {
     flexRender,
     getCoreRowModel,
     useReactTable,
+    RowData
 } from "@tanstack/react-table"
 
 import {
@@ -14,18 +15,29 @@ import {
     TableRow,
 } from "@/components/ui/table"
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+declare module '@tanstack/table-core' {
+  interface TableMeta<TData extends RowData> {
+    handleDeleteAccount: (accountId: string) => void
+  }
 }
 
-function DataTable<TData, TValue>({ columns, data}: DataTableProps<TData, TValue>) {
-  console.log(data)
-  
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[],
+  deleteAccount: (accountId: string) => void
+}
+
+function DataTable<TData, TValue>({ columns, data, deleteAccount }: DataTableProps<TData, TValue>) {
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    meta: {
+        handleDeleteAccount: (accountId: string) => {
+            deleteAccount(accountId)
+        }
+    }
   })
 
   return (

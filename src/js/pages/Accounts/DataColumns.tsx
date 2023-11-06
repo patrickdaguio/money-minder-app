@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-
 const columns: ColumnDef<Account>[] = [
   {
     accessorKey: "name",
@@ -21,10 +20,10 @@ const columns: ColumnDef<Account>[] = [
   },
   {
     accessorKey: "type",
-    header: 'Balance',
+    header: 'Type',
     cell: ({ row }) => {
       return <div className="capitalize">{row.getValue('type')}</div>
-    }    
+    }
   },
   {
     accessorKey: "balance",
@@ -35,23 +34,24 @@ const columns: ColumnDef<Account>[] = [
         style: "currency",
         currency: "GBP",
       }).format(amount)
-  
+
       return <div className="text-right font-medium">{formatted}</div>
     },
   },
   {
     accessorKey: "transactions",
     header: () => <div className="text-center">Transactions</div>,
-    cell: ({ row }) => {
+    cell: () => {
       return <a href="/" className="block text-center">View</a>
     },
   },
   {
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const account = row.original
-  
+      const tableMeta = table.options.meta
+
       return (
         <div className="text-center">
           <DropdownMenu>
@@ -65,6 +65,11 @@ const columns: ColumnDef<Account>[] = [
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
                 onClick={() => navigator.clipboard.writeText(account.id)}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => tableMeta?.handleDeleteAccount(account.id)}
               >
                 Delete
               </DropdownMenuItem>

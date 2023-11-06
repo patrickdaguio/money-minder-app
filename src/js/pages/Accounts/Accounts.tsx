@@ -78,30 +78,17 @@ const Accounts = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Create addAccount={handleAddAccount} />
-      <div className="card mt-5">
+      <div className="card mb-5">
         <h2 className="font-bold text-2xl mb-4">Accounts</h2>
-        {isLoading ? (
+        { isLoading ? (
           <p>Loading...</p>
         ) : accounts.length === 0 ? (
           <p>No accounts found.</p>
         ) : (
-          <>
-            <ul>
-              {accounts.map((account) => (
-                <li className="flex justify-between" key={account.id}>
-                  <span>{account.name}</span>
-                  <span>{account.balance}</span>
-                  <button onClick={() => handleDeleteAccount(account.id)}>
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <DataTable columns={columns} data={accounts}/>
-          </>
+          <DataTable columns={columns} data={accounts} deleteAccount={handleDeleteAccount}/>
         )}
       </div>
+      <Create addAccount={handleAddAccount} />
     </div>
   );
 };
